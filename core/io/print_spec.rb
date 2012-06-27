@@ -1,5 +1,6 @@
 require File.expand_path('../../../spec_helper', __FILE__)
 require File.expand_path('../fixtures/classes', __FILE__)
+require 'stringio'
 
 describe IO, "#print" do
   before :each do
@@ -49,6 +50,27 @@ describe IO, "#print" do
 
   it "raises IOError on closed stream" do
     lambda { IOSpecs.closed_io.print("stuff") }.should raise_error(IOError)
+  end
+ 
+  describe "printing nil" do
+    def print_nil
+      stringy = StringIO.new
+      stringy.print nil
+      stringy.rewind
+      stringy.read
+    end
+
+    ruby_version_is "" ... "1.9" do
+      it "prints the word nil" do
+        print_nil.should == "nil->"
+      end
+    end
+
+    ruby_version_is "1.9" do
+      it "prints nothing for nil" do
+        print_nil.should == "->"
+      end
+    end    
   end
 end
 

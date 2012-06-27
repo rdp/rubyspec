@@ -142,6 +142,26 @@ describe "Predefined globals $1..N" do
     end
     test("-").should == nil
   end
+  
+  describe "in different scopes" do
+    def test2
+      $1.should == nil
+      'b' =~ /(c)/
+    end
+    it "only retains match groups for the current scope" do
+      'a' =~ /(b)/ # clear it
+      $1.should == nil
+      'a' =~ /(a)/
+      $1.should == 'a'
+      test2
+    end
+    it "should retain a local match group even if a non match occurs in a different scope" do
+      'a' =~ /(a)/
+      $1.should == 'a'
+      test2
+      $1.should == 'a'
+    end
+  end
 end
 
 describe "Predefined global $stdout" do

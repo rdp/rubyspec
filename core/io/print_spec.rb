@@ -52,13 +52,14 @@ describe IO, "#print" do
     lambda { IOSpecs.closed_io.print("stuff") }.should raise_error(IOError)
   end
  
+  def print_nil
+    stringy = StringIO.new
+    stringy.print nil
+    stringy.rewind
+    stringy.read
+  end
+  
   describe "printing nil" do
-    def print_nil
-      stringy = StringIO.new
-      stringy.print nil
-      stringy.rewind
-      stringy.read
-    end
 
     ruby_version_is "" ... "1.9" do
       it "prints the word nil" do

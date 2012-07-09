@@ -52,24 +52,19 @@ describe IO, "#print" do
     lambda { IOSpecs.closed_io.print("stuff") }.should raise_error(IOError)
   end
  
-  def print_nil
-    stringy = StringIO.new
-    stringy.print nil
-    stringy.rewind
-    stringy.read
-  end
-  
   describe "printing nil" do
 
     ruby_version_is "" ... "1.9" do
       it "prints the word nil" do
-        print_nil.should == "nil->"
+        touch(@name) { |f| f.print(nil) }
+        IO.read(@name).should == "nil->"
       end
     end
 
     ruby_version_is "1.9" do
       it "prints nothing for nil" do
-        print_nil.should == "->"
+        touch(@name) { |f| f.print(nil) }
+        IO.read(@name).should == "->"
       end
     end    
   end
